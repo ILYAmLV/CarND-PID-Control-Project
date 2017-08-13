@@ -34,6 +34,10 @@ int main()
 
   PID pid;
   // TODO: Initialize the pid variable.
+  // *****************************************************************************************
+  pid.Init(0.105, 0.0008, 2.5);      // Manually tuned 
+  // *************************** Initialized the PID variable ***********************************
+
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
@@ -49,21 +53,41 @@ int main()
           // j[1] is the data JSON object
           double cte = std::stod(j[1]["cte"].get<std::string>());
           double speed = std::stod(j[1]["speed"].get<std::string>());
-          double angle = std::stod(j[1]["steering_angle"].get<std::string>());
-          double steer_value;
+		  double steer_value;
+          // double angle = std::stod(j[1]["steering_angle"].get<std::string>());	Not used
+          
           /*
           * TODO: Calcuate steering value here, remember the steering value is
           * [-1, 1].
           * NOTE: Feel free to play around with the throttle and speed. Maybe use
           * another PID controller to control the speed!
           */
-          
+// *************************************************************************************************
+		  pid.UpdateError(cte);
+		  steer_value = pid.TotalError();
+// ************************** Calcuated steering value ***************************************
+
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
-          msgJson["throttle"] = 0.3;
+// ***********************************************************************************	  
+		  if (fabs(cte) > 1.0 || // If too far RIGHT or
+			  fabs(cte) < -1.0)  // too far LEFT
+		  {
+			  msgJson["throttle"] = -1.0; // Brake
+		  }
+		  else
+		  {
+			  msgJson["throttle"] = 1.0; // Otherwise full throttle
+		  }
+		  if (fabs(speed) < 50.0) // If speed less then 50
+		  {
+			  msgJson["throttle"] = 0.9; // 0.9 throttle
+		  }
+          // msgJson["throttle"] = 0.4;
+// *************************************************************************************
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
           std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
