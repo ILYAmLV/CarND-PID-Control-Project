@@ -1,7 +1,10 @@
-# CarND-Controls-PID
-Self-Driving Car Engineer Nanodegree Program
+# Self-Driving Car Engineer Nanodegree Program
 
----
+## PID Control - Project 4
+
+<p align="center">
+    <img src="./imgs/img.png" width="1000">
+</p>
 
 ## Dependencies
 
