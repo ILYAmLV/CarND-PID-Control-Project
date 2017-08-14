@@ -17,4 +17,4 @@
 ## Reflections
 
 
-[![PID Control](http://img.youtube.com/vi/eQGfbPIb1_U/0.jpg)](http://www.youtube.com/watch?v=eQGfbPIb1_U "PID Contol")
+[![Video](./imgs/youtube.png)](https://youtu.be/eQGfbPIb1_U)
